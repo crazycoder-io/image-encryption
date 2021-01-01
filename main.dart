@@ -30,20 +30,19 @@ class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 
-  Future<List<int>> encrypt() async {
+  Future<List<int>> encrypt(var KEY) async {
     // load avatar image
     ByteData imageData = await rootBundle.load('dosyalar/denizf.jpg');
     List<int> bytes = Uint8List.view(imageData.buffer);
     var avatarImage = Images.decodeImage(bytes);
 
-    var a = 'dd121e36961a04627eacff629765dd3528471ed745c1e32222db4a8a5f3421c4';
     List<int> xr = List<int>(); //xor listesi
     int xor = 0, pikseller = 0;
     for (int y = 0; y <= avatarImage.height; y++) {
       for (int x = 0; x <= avatarImage.width; x++) {
         pikseller =
             avatarImage.getPixelSafe(x, y); //sıra ile her piksel çekiliyor.
-        xor = pikseller.hashCode ^ a.hashCode; //pikseller xor'lanıyor
+        xor = pikseller.hashCode ^ KEY.hashCode; //pikseller xor'lanıyor
 
         xr.add(xor); //xr listesine xor'lanmıs degerler atılıyor
       }
@@ -133,9 +132,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<int> myImage;
+  var KEY = 'dd121e36961a04627eacff629765dd3528471ed745c1e32222db4a8a5f3421c4';
 
   void mencrypt() {
-    widget.encrypt().then((List<int> image) {
+    widget.encrypt(KEY).then((List<int> image) {
       setState(() {
         myImage = image;
       });
